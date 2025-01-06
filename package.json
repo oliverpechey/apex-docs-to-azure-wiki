@@ -41,9 +41,13 @@
   "author": "Oliver Pechey <oliverpechey@users.noreply.github.com>",
   "license": "MIT",
   "dependencies": {
+    "@cparra/apexdocs": "^3.7.2",
     "tslib": "~2.8"
   },
   "volta": {
     "node": "20.17.0"
+  },
+  "bin": {
+    "apex-to-azure": "./build/src/main.js"
   }
 }
