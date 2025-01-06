@@ -9,7 +9,7 @@ import tseslint from 'typescript-eslint';
 // You should change it to your needs following the documentation.
 export default tseslint.config(
   {
-    ignores: ['**/build/**', '**/tmp/**', '**/coverage/**', 'commitlint.config.js'],
+    ignores: ['**/build/**', '**/tmp/**', '**/coverage/**', 'commitlint.config.ts'],
   },
   eslint.configs.recommended,
   eslintConfigPrettier,
