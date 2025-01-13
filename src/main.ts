@@ -1,47 +1,34 @@
 #!/usr/bin/env node
-import { process as apexdocsProcess } from '@cparra/apexdocs';
-import * as fs from 'fs';
 
-/*
- * @description: Checks to see if the force-app directory exists and exits out if not.
- * @param: none
- * @return: none
- * @example: checkForceAppExists();
+/**
+ * @description This is the main entry point for the application. It generates markdown files from the Apex classes and triggers the upload to Azure DevOps.
+ * @example npx apex-to-azure
+ * @author Oliver Pechey
  */
-const checkForceAppExists = (): void => {
-  if (!fs.existsSync('force-app')) {
-    console.error('force-app directory not found. Exiting...');
-    process.exit(1);
-  }
-};
+import { generateMarkdown } from './markdown.js';
+import { AzureClient } from './azure.js';
+import * as path from 'path';
+import { Uploader } from './uploader.js';
 
-/*
-  * @description: Runs the ApexDocs process to generate markdown files.
-  * @param: none
-  * @return: none
-  * @example: await runApexDocs();
-  */
-async function runApexDocs(): Promise<void> {
-  console.log('Exporting Apex classes to markdown...');
-  try {
-    await apexdocsProcess({
-      defaultGroupName: 'Apex Classes',
-      customObjectsGroupName: 'Objects',
-      includeMetadata: true,
-      scope: ['global', 'public', 'namespaceaccessible'],
-      sourceDir: 'force-app',
-      targetDir: 'docs',
-      targetGenerator: 'markdown',
-    });
-    console.log('Export complete!');
-  }
-  catch(error) {
-    console.error(`Unable to generate Markdown due to error: ${error}`);
-    process.exit(1);
-  }
-  
-}
+// Extract the command line arguments
+const args = process.argv.slice(2);
+const orgUrl = args[0];
+const token = args[1];
+const project = args[2];
+const wikiId = args[3];
+const pathPrefix = args[4];
 
-// This will be executed when "npx apex-to-azure" is executed.
-checkForceAppExists();
-await runApexDocs();
+// Generate the markdown files
+await generateMarkdown();
+
+// As this should be run in the root of a dx project, we are expecting the docs folder to be in the root
+const docsFolder = path.join(process.cwd(), 'docs');
+
+// Generate the Azure client used to upload the markdown
+const azure = new AzureClient(orgUrl, project, token, wikiId, pathPrefix);
+
+// Create the Traverser and start the upload
+console.log('Uploading markdown to DevOps wiki');
+const uploader = new Uploader(docsFolder, azure);
+await uploader.start();
+console.log('Upload complete!');
