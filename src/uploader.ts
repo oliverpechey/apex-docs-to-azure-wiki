@@ -3,7 +3,7 @@
  * @author Oliver Pechey
  */
 import { WikiPageCreateOrUpdateParameters } from 'azure-devops-node-api/interfaces/WikiInterfaces.js';
-import { AzureClient } from './azure.js';
+import { AzureClient } from './azureClient.js';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -13,33 +13,35 @@ import * as path from 'path';
 export class Uploader {
   #docsFolder: string;
   #azure: AzureClient;
+  #pathPrefix: string;
 
   /**
    * @description Constructor for the Uploader class
    * @param {string} docsFolder - The path to the folder containing the markdown files
    * @param {AzureClient} azure - The AzureClient instance used to interact with the Azure DevOps API
    */
-  constructor(docsFolder: string, azure: AzureClient) {
+  constructor(docsFolder: string, azure: AzureClient, pathPrefix: string) {
     this.#docsFolder = docsFolder;
     this.#azure = azure;
+    this.#pathPrefix = pathPrefix;
   }
 
   /**
    * @description Starts the upload process
    * @param {string} directory - The directory to start the upload process from
-   * @returns {Promise<void>} - A promise that resolves when the upload is complete
+   * @returns {Promise<string[]>} - A promise that resolves with an array of the uploaded pages
    */
-  async start(directory: string = this.#docsFolder): Promise<void> {
+  async start(directory: string = this.#docsFolder): Promise<string[]> {
+    const uploadedPages: string[] = [];
     console.log(`Traversing ${directory}`);
     try {
       const files = await fs.promises.readdir(directory);
 
       for (const file of files) {
         const filePath = path.join(directory, file);
-
         let data: WikiPageCreateOrUpdateParameters;
 
-        // Read the file content if its not a directory otherwise set filler content
+        // Read the file contents if its not a directory otherwise set filler content
         if (!fs.statSync(filePath).isDirectory()) {
           data = {
             content: fs.readFileSync(filePath, 'utf8'),
@@ -57,12 +59,15 @@ export class Uploader {
           .replace(/\.[^/.]+$/, ''); // Remove file extension
 
         // Make the call to azure to upsert
-        await this.#azure.upsertWikiPage(relativePath, data);
+        await this.#azure.upsertWikiPage(this.#pathPrefix + '/' + relativePath, data);
+        uploadedPages.push(relativePath);
 
         if (fs.statSync(filePath).isDirectory()) {
-          await this.start(filePath); // Recurse into subdirectories
+          const uploadedSubPages = await this.start(filePath); // Recurse into subdirectories
+          uploadedPages.push(...uploadedSubPages);
         }
       }
+      return uploadedPages;
     } catch (err) {
       console.error('Error uploading markdown: ', err);
       process.exit(1);
