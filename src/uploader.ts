@@ -59,7 +59,10 @@ export class Uploader {
           .replace(/\.[^/.]+$/, ''); // Remove file extension
 
         // Make the call to azure to upsert
-        await this.#azure.upsertWikiPage(this.#pathPrefix + '/' + relativePath, data);
+        await this.#azure.upsertWikiPage(
+          this.#pathPrefix + '/' + relativePath,
+          data,
+        );
         uploadedPages.push(relativePath);
 
         if (fs.statSync(filePath).isDirectory()) {

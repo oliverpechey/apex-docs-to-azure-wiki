@@ -29,7 +29,7 @@ export class AzureClient {
     personalAccessToken: string,
     wikiId: string,
   ) {
-    this.#baseUrl = `${azureUrl}${projectName}/_apis`
+    this.#baseUrl = `${azureUrl}${projectName}/_apis`;
     this.#personalAccessToken = personalAccessToken;
     this.#wikiId = wikiId;
   }
