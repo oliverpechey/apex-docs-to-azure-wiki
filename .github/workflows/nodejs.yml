@@ -9,6 +9,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
+        with:
+          registry-url: 'https://registry.npmjs.org'
       - run: npm ci --no-audit
       - run: npm run lint --if-present
       - run: npm run prettier:check --if-present
