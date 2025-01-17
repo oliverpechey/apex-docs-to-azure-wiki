@@ -1,6 +1,6 @@
 {
   "name": "apex-docs-to-azure-wiki",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Minimalistic boilerplate to quick-start Node.js development in TypeScript.",
   "type": "module",
   "devDependencies": {
