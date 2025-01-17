@@ -1,6 +1,6 @@
 {
   "name": "apex-docs-to-azure-wiki",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A wrapper for cesarParra/apexdocs that uploads to an Azure DevOps wiki.",
   "type": "module",
   "devDependencies": {
