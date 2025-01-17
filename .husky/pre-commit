@@ -1,1 +1,8 @@
+# Increment the version
+npm version patch --no-git-tag-version
+
+# Add the updated package.json and package-lock.json to the commit
+git add package.json package-lock.json
+
+# Run tests
 #npm test
