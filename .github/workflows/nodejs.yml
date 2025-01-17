@@ -13,4 +13,9 @@ jobs:
       - run: npm run lint --if-present
       - run: npm run prettier:check --if-present
       #- run: npm test
-      - run: npm run build --if-present
+      - name: Build Package
+        run: npm run build --if-present
+      - name: Publish Package
+        run: npm publish --access public --if-present
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
