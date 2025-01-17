@@ -1,8 +1,9 @@
 # Apex Docs to Azure Wiki
 
+[![NPM Version][npm-badge]][npm]
 [![TypeScript version][ts-badge]][typescript-5-7]
 [![Node.js version][nodejs-badge]][nodejs]
-[![APLv2][license-badge]][license]
+[![MIT][license-badge]][license]
 [![Build Status - GitHub Actions][gha-badge]][gha-ci]
 
 This npm package is intended to be used in an azure CI/CD pipeline. If run in a Salesforce DX project, it will use [cesarParra/apexdocs][apex-docs] to generate markdown on any Apex classes. It will then upload them to the specified Azure Wiki.
@@ -40,3 +41,5 @@ This package doesn't generate flow documentation. However [sfdx-hardis](https://
 [license]: https://github.com/oliverpechey/apex-docs-to-azure-wiki/blob/main/LICENSE
 [apex-docs]: https://github.com/cesarParra/apexdocs
 [hardis]: https://github.com/hardisgroupcom/sfdx-hardis
+[npm-badge]: https://badgen.net/npm/v/apex-docs-to-azure-wiki
+[npm]: https://www.npmjs.com/package/apex-docs-to-azure-wiki
